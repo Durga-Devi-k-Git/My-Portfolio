@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Durga Devi | Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --color-1: #ff00c1; 
+            --color-2: #00fff0; 
+            --color-3: #7000ff;
+            --color-4: #ffcc00; 
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: white; overflow: hidden;
+        }
+
+        .container { display: flex; height: 100vh; width: 100%; }
+
+        /* Profile Section */
+        .partition-left { flex: 0 0 32%; position: relative; }
+        .half-circle {
+            position: absolute;
+            top: 0; left: 0; height: 100vh; width: 67vh;
+            background-image: url('mypic.jpeg'); 
+            background-size: cover; background-position: 120% center; 
+            border-radius: 0 50vh 50vh 0; z-index: 2;
+        }
+
+        .half-circle::after {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 0 50vh 50vh 0; padding: 6px; 
+            background: linear-gradient(to bottom, var(--color-1), var(--color-2), var(--color-3));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out; mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .glow-shadow {
+            position: absolute; top: 0; left: 0; height: 100vh; width: 62vh;
+            border-radius: 0 50vh 50vh 0; box-shadow: 20px 0 50px rgba(0, 255, 240, 0.2); z-index: 1;
+        }
+
+        /* Content Section */
+        .partition-right {
+            flex: 1; padding: 40px 60px; display: flex;
+            flex-direction: column; margin-left: 18vh; justify-content: center;
+        }
+
+        nav { position: absolute; top: 40px; display: flex; gap: 40px; z-index: 100; }
+        .nav-btn {
+            background: none; border: none; color: #555;
+            font-size: 0.85rem; font-weight: 700; cursor: pointer;
+            padding: 10px 0; position: relative;
+            text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;
+        }
+        .nav-btn.active { color: #fff; }
+        .nav-btn.active::after {
+            content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px;
+            background: linear-gradient(to right, var(--color-1), var(--color-2));
+            box-shadow: 0 0 15px var(--color-2);
+        }
+
+        .content-section { display: none; animation: fadeIn 1s ease-out forwards; max-width: 850px; }
+        .content-section.active { display: block; }
+
+        h1 { font-size: 5rem; margin: 0; font-weight: 900; }
+        .name-highlight {
+            background: linear-gradient(to right, var(--color-1), var(--color-2), var(--color-3));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .description { color: #aaa; line-height: 1.6; margin-top: 25px; font-size: 1.1rem; text-align: justify; }
+
+        .cta-container { margin-top: 35px; display: flex; gap: 35px; align-items: center; flex-wrap: wrap; }
+        .icon-btn {
+            position: relative; width: 50px; height: 50px; border-radius: 50%; 
+            border: 2px solid var(--color-2); color: var(--color-2);
+            display: flex; justify-content: center; align-items: center;
+            text-decoration: none; transition: all 0.4s ease;
+        }
+        .icon-btn:hover {
+            background: linear-gradient(45deg, var(--color-1), var(--color-3));
+            border-color: transparent; color: white; transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(255, 0, 193, 0.6);
+        }
+
+        .tooltip-text {
+            visibility: hidden; width: auto; background-color: rgba(255, 255, 255, 0.1);
+            color: #fff; text-align: center; border-radius: 6px; padding: 8px 12px;
+            position: absolute; bottom: -55px; left: 50%; transform: translateX(-50%);
+            opacity: 0; transition: opacity 0.3s; font-size: 0.75rem; white-space: nowrap;
+            backdrop-filter: blur(5px); border: 1px solid rgba(0, 255, 240, 0.3);
+        }
+        .icon-btn:hover .tooltip-text { visibility: visible; opacity: 1; }
+
+        .quote-highlight {
+            margin: 30px 0 20px 0; font-size: 1.0rem; font-weight: 800; text-transform: uppercase;
+            background: linear-gradient(to right, var(--color-2), var(--color-1));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            display: inline-block; border-left: 5px solid var(--color-3); padding-left: 15px;
+        }
+
+        .about-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .stat-item {
+            background: rgba(255, 255, 255, 0.02); padding: 20px; border-radius: 12px;
+            position: relative; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .stat-item:hover { transform: scale(1.05); background: rgba(255, 255, 255, 0.05); box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1); }
+        .stat-item strong { display: block; font-size: 0.7rem; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .stat-text { font-size: 1rem; color: #fff; font-weight: 500; }
+
+        /* Contact Pill Styling */
+        .contact-grid-premium { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 25px; }
+        .contact-card-mini {
+            display: flex; align-items: center; gap: 15px;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 22px; border-radius: 50px; text-decoration: none;
+            transition: all 0.4s ease; min-width: 180px;
+        }
+        .contact-card-mini:hover {
+            background: rgba(0, 255, 240, 0.1); transform: translateY(-3px);
+            border-color: var(--color-2); box-shadow: 0 8px 20px rgba(0, 255, 240, 0.15);
+        }
+        .contact-icon { font-size: 1.2rem; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 50%; }
+
+        /* General Classes */
+        .proj-list-side .stat-item { transition: all 0.3s ease; border-left: 0px solid transparent; }
+        .proj-list-side .stat-item:hover { transform: translateX(12px) scale(1.02); background: rgba(255, 255, 255, 0.08); border-left: 5px solid var(--color-2); box-shadow: -10px 5px 20px rgba(0, 255, 240, 0.15); }
+        .proj-list-side .stat-item:hover .stat-text { color: var(--color-2); }
+
+        .skill-symbol-card { text-align: center; transition: 0.4s; padding: 10px; cursor: default; }
+        .skill-symbol-card:hover { transform: translateY(-8px) scale(1.1); filter: brightness(1.3); }
+        .skill-symbol-card i { font-size: 2.3rem; margin-bottom: 5px; display: block; }
+        .skill-symbol-card span { font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; color: #fff; display: block; }
+
+        .proj-flex-container { display: flex; gap: 30px; margin-top: 20px; height: 50vh; align-items: flex-start; }
+        .proj-list-side { flex: 0 0 42%; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; padding-right: 5px; }
+        .project-detail-box {
+            flex: 1; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(0, 255, 240, 0.3); 
+            border-radius: 15px; padding: 25px; display: none; height: 83%; overflow-y: auto;
+            animation: slideIn 0.6s ease forwards;
+        }
+
+        .cert-container-premium {
+            background: rgba(255, 255, 255, 0.03); 
+            border: 1px solid rgba(112, 0, 255, 0.3); 
+            border-radius: 20px; padding: 30px; 
+            height: 52vh; overflow-y: auto;
+            box-shadow: inset 0 0 20px rgba(0, 255, 240, 0.05);
+        }
+        .cert-grid-large { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .cert-card-premium {
+            display: flex; align-items: center; gap: 15px; 
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 18px; border-radius: 15px; transition: all 0.4s ease;
+        }
+        .cert-card-premium:hover {
+            background: rgba(0, 255, 240, 0.08); border-color: var(--color-2);
+            transform: translateX(10px); box-shadow: -5px 0 15px rgba(0, 255, 240, 0.2);
+        }
+        .cert-icon-box {
+            width: 45px; height: 45px; background: rgba(112, 0, 255, 0.2);
+            border-radius: 10px; display: flex; justify-content: center; align-items: center;
+            font-size: 1.3rem; color: var(--color-2); flex-shrink: 0;
+        }
+        .cert-info p { margin: 0; font-size: 0.85rem; font-weight: 600; color: #fff; line-height: 1.3; }
+        .cert-info span { font-size: 0.7rem; color: var(--color-1); text-transform: uppercase; letter-spacing: 1px; display: block; margin-top: 4px; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* Responsive Design Adjustments */
+@media (max-width: 1024px) {
+    .container { flex-direction: column; overflow-y: auto; }
+    
+    .partition-left {
+        flex: 0 0 auto;
+        height: 300px;
+        width: 100%;
+    }
+    
+    .half-circle {
+        height: 300px;
+        width: 300px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 50%; /* Mobile-la circle shape better-a irukum */
+        background-position: center;
+    }
+    
+    .half-circle::after { border-radius: 50%; }
+    .glow-shadow { display: none; }
+
+    .partition-right {
+        margin-left: 0;
+        padding: 20px;
+        align-items: center;
+        text-align: center;
+    }
+
+    nav {
+        position: relative;
+        top: 0;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    h1 { font-size: 3rem; }
+    .description { text-align: center; }
+    .cta-container { justify-content: center; }
+
+    .proj-flex-container {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .proj-list-side { flex: 1 1 auto; width: 100%; }
+    
+    .cert-grid-large { grid-template-columns: 1fr; }
+    .about-stats { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+    h1 { font-size: 2.2rem; }
+    .nav-btn { font-size: 0.7rem; letter-spacing: 1px; }
+    .skill-symbol-card i { font-size: 1.8rem; }
+    .contact-card-mini { width: 100%; }
+}
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="partition-left">
+            <div class="glow-shadow"></div>
+            <div class="half-circle"></div>
+        </div>
+
+        <div class="partition-right">
+            <nav id="navbar">
+                <button class="nav-btn active" onclick="showSection('home')">Home</button>
+                <button class="nav-btn" onclick="showSection('about')">About Me</button>
+                <button class="nav-btn" onclick="showSection('skills')">Skills</button>
+                <button class="nav-btn" onclick="showSection('projects')">Projects</button>
+                <button class="nav-btn" onclick="showSection('certifications')">Certifications</button>
+                <button class="nav-btn" onclick="showSection('contact')">Contact Me</button>
+            </nav>
+
+            <div id="home" class="content-section active">
+                <div class="greeting" style="color:var(--color-2); margin-bottom: 5px; font-size: 1.3rem;"></br>👋 Hi, I’m</br></br></div>
+                <h1><span class="name-highlight">DURGA DEVI</span></h1>
+                <div class="sub-heading" style="color:#e0e0e0; font-size: 1.2rem; margin-top:15px; font-weight: 600;">
+                    MCA Graduate | Software Developer | Full Stack Enthusiast
+                </div>
+                <p class="description"></br>
+                    I have a strong foundation in software development, programming, and problem-solving. 
+                    I'm passionate about building clean, user-centric applications and solving real-world challenges through technology.
+                </br></br></p>
+                <div class="cta-container">
+                    <a href="Durga Devi - ASE.pdf" download class="icon-btn">
+                        <i class="fa-solid fa-file-arrow-down"></i>
+                        <span class="tooltip-text">Download Resume</span>
+                    </a>
+                    <a href="https://linkedin.com/in/yourusername" target="_blank" class="icon-btn"><i class="fa-brands fa-linkedin-in"></i><span class="tooltip-text">LinkedIn</span></a>
+                    <a href="https://github.com/yourusername" target="_blank" class="icon-btn"><i class="fa-brands fa-github"></i><span class="tooltip-text">GitHub</span></a>
+                </div>
+            </div>
+
+            <div id="about" class="content-section">
+                <h2 style="font-size: 2.3rem; margin-bottom: 10px;">About <span class="name-highlight">Me</span></h2>
+                <p class="description">
+                    I am an MCA graduate with a strong foundation in software development and problem-solving. 
+                    I enjoy building user-friendly applications and writing clean, maintainable code. 
+                    I have hands-on experience in full-stack development through academic projects and internships.
+                </p>
+                <div class="quote-highlight">Eager to learn, ready to build</div>
+                <div class="about-stats" style="margin-top: 20px;">
+                    <div class="stat-item" style="border-color: var(--color-1);"><strong style="color: var(--color-1);">Education</strong><div class="stat-text">Master of Computer Application</div></div>
+                    <div class="stat-item" style="border-color: var(--color-2);"><strong style="color: var(--color-2);">Focus</strong><div class="stat-text">Full-Stack Development</div></div>
+                    <div class="stat-item" style="border-color: var(--color-3);"><strong style="color: var(--color-3);">Experience</strong><div class="stat-text">Internship & Academic Projects</div></div>
+                    <div class="stat-item" style="border-color: var(--color-4);"><strong style="color: var(--color-4);">Goal</strong><div class="stat-text">Building Real-world Applications</div></div>
+                </div>
+            </div>
+
+            <div id="skills" class="content-section">
+                <h2 style="font-size: 2.3rem; margin-bottom: 25px;">My <span class="name-highlight">Skills</span></h2>
+                <div style="margin-bottom: 35px;">
+                    <h3 style="color: var(--color-2); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;"></br>Technical Skill</h3>
+                    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; background: rgba(255,255,255,0.02); padding: 25px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div class="skill-symbol-card" style="color: var(--color-1);"><i class="fa-brands fa-java"></i><span>JAVA</span></div>
+                        <div class="skill-symbol-card" style="color: var(--color-2);"><i class="fa-brands fa-python"></i><span>PYTHON</span></div>
+                        <div class="skill-symbol-card" style="color: var(--color-3);"><i class="fa-solid fa-hashtag"></i><span>C#</span></div>
+                        <div class="skill-symbol-card" style="color: var(--color-4);"><i class="fa-brands fa-html5"></i><span>HTML/CSS</span></div>
+                        <div class="skill-symbol-card" style="color: var(--color-1);"><i class="fa-brands fa-js"></i><span>JS</span></div>
+                        <div class="skill-symbol-card" style="color: var(--color-2);"><i class="fa-solid fa-database"></i><span>MYSQL</span></div>
+                        <div class="skill-symbol-card" style="color: var(--color-3);"><i class="fa-brands fa-aws"></i><span>AWS</span></div>
+                        <div class="skill-symbol-card" style="color: var(--color-4);"><i class="fa-brands fa-git-alt"></i><span>GIT</span></div>
+                        <div class="skill-symbol-card" style="color: var(--color-1);"><i class="fa-solid fa-microchip"></i><span>PROMPT ENG</span></div>
+                        <div class="skill-symbol-card" style="color: var(--color-2);"><i class="fa-solid fa-rocket"></i><span>STREAMLIT</span></div>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="color: var(--color-1); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">Soft Skill</br></br></h3>
+                    <div class="about-stats" style="grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                        <div class="stat-item" style="border-color: var(--color-2); padding: 15px;"><div class="stat-text" style="font-size: 0.9rem;">Strong analytical and problem-solving skills</div></div>
+                        <div class="stat-item" style="border-color: var(--color-1); padding: 15px;"><div class="stat-text" style="font-size: 0.9rem;">Quick learner and adaptable to new technologies</div></div>
+                        <div class="stat-item" style="border-color: var(--color-3); padding: 15px;"><div class="stat-text" style="font-size: 0.9rem;">Excellent communication and teamwork abilities</div></div>
+                        <div class="stat-item" style="border-color: var(--color-4); padding: 15px;"><div class="stat-text" style="font-size: 0.9rem;">Ability to manage tight deadlines & quality results</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="projects" class="content-section">
+                <h2 style="font-size: 2.3rem; margin-bottom: 25px;">My <span class="name-highlight">Projects</br></br></span></h2>
+                <div class="proj-flex-container">
+                    <div class="proj-list-side">
+                        <div class="stat-item" onclick="openProject('ai')" style="cursor: pointer; border-color: var(--color-1);"><div class="stat-text">AI Resume Analyzer</div><strong style="color: var(--color-1);">Click for Info</strong></div>
+                        <div class="stat-item" onclick="openProject('event')" style="cursor: pointer; border-color: var(--color-2);"><div class="stat-text">Event Management System</div><strong style="color: var(--color-2);">Click for Info</strong></div>
+                        <div class="stat-item" onclick="openProject('ecommerce')" style="cursor: pointer; border-color: var(--color-4);"><div class="stat-text">Ecommerce Website</div><strong style="color: var(--color-4);">Click for Info</strong></div>
+                        <div class="stat-item" onclick="openProject('gesture')" style="cursor: pointer; border-color: var(--color-3);"><div class="stat-text">Hand Gesture Cursor Control</div><strong style="color: var(--color-3);">Click for Info</strong></div>
+                    </div>
+                    <div id="project-panel" class="project-detail-box">
+                        <h3 id="p-title" style="color: var(--color-2); margin-top: 0; font-size: 1.4rem;"></h3>
+                        <p id="p-desc" class="description" style="font-size: 0.95rem; margin-top: 15px; color: #ccc;"></p>
+                        <div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                            <strong style="color: var(--color-1); font-size: 0.75rem; text-transform: uppercase;">Technologies:</strong>
+                            <p id="p-tech" style="color: #fff; font-weight: 600; margin-top: 8px;"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="certifications" class="content-section">
+                <h2 style="font-size: 2.3rem; margin-bottom: 25px;">Professional <span class="name-highlight">Certifications</span></h2>
+                <div class="cert-container-premium">
+                    <div class="cert-grid-large">
+                        <div class="cert-card-premium"><div class="cert-icon-box" style="background: rgba(0, 255, 240, 0.2);"><i class="fa-solid fa-gem"></i></div><div class="cert-info"><p>Google Gemini for Developers</p><span>LinkedIn Learning</span></div></div>
+                        <div class="cert-card-premium"><div class="cert-icon-box"><i class="fa-solid fa-code"></i></div><div class="cert-info"><p>Full Stack Flask</p><span>LinkedIn Learning</span></div></div>
+                        <div class="cert-card-premium"><div class="cert-icon-box"><i class="fa-solid fa-chart-line"></i></div><div class="cert-info"><p>Power BI AI/ML</p><span>LinkedIn Learning</span></div></div>
+                        <div class="cert-card-premium"><div class="cert-icon-box"><i class="fa-brands fa-python"></i></div><div class="cert-info"><p>Django Training</p><span>LinkedIn Learning</span></div></div>
+                        <div class="cert-card-premium"><div class="cert-icon-box"><i class="fa-solid fa-magnifying-glass-chart"></i></div><div class="cert-info"><p>Data Analytics</p><span>NoviTech R&D</span></div></div>
+                        <div class="cert-card-premium"><div class="cert-icon-box"><i class="fa-solid fa-microchip"></i></div><div class="cert-info"><p>AI & Data Science</p><span>NoviTech R&D</span></div></div>
+                        <div class="cert-card-premium"><div class="cert-icon-box"><i class="fa-solid fa-robot"></i></div><div class="cert-info"><p>Artificial Intelligence</p><span>NoviTech R&D</span></div></div>
+                        <div class="cert-card-premium"><div class="cert-icon-box"><i class="fa-solid fa-layer-group"></i></div><div class="cert-info"><p>Full Stack Masterclass</p><span>NoviTech R&D</span></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="contact" class="content-section">
+                <h2 style="font-size: 2.3rem; margin-bottom: 10px;">Contact <span class="name-highlight">Me</br></br></span></h2>
+                <p class="description" style="margin-bottom: 25px;">I am open to new opportunities and collaborations. Feel free to reach out through any of these channels!</p>
+                </br>
+                <div class="contact-grid-premium">
+                    <a href="mailto:durgadevi.k.1505@gmail.com" class="contact-card-mini">
+                        <div class="contact-icon" style="color: var(--color-1);"><i class="fa-solid fa-envelope"></i></div>
+                        <div class="stat-text" style="font-size: 0.85rem;">durgadevi.k.1505@gmail.com</div>
+                    </a>
+                    
+                    <div class="contact-card-mini">
+                        <div class="contact-icon" style="color: var(--color-4);"><i class="fa-solid fa-location-dot"></i></div>
+                        <div class="stat-text" style="font-size: 0.85rem;">Sivakasi, Tamil Nadu, India</div>
+                    </div>
+                    <a href="https://linkedin.com/in/yourusername" target="_blank" class="contact-card-mini">
+                        <div class="contact-icon" style="color: #0077b5;"><i class="fa-brands fa-linkedin-in"></i></div>
+                        <div class="stat-text" style="font-size: 0.85rem;">LinkedIn</div>
+                    </a>
+                    <a href="https://github.com/yourusername" target="_blank" class="contact-card-mini">
+                        <div class="contact-icon" style="color: #fff;"><i class="fa-brands fa-github"></i></div>
+                        <div class="stat-text" style="font-size: 0.85rem;">GitHub</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const projectLibrary = {
+            'ai': { title: 'AI Resume Analyzer', desc: 'Developed an AI-powered tool using Streamlit to help job seekers analyze resumes and help recruiters filter and score candidates.', tech: 'Python, Streamlit, SpaCy, PDFMiner, MySQL' },
+            'event': { title: 'Event Management System', desc: 'Built a web-based application for streamlined event creation, participant registration, and automated scheduling.', tech: 'C#, CSS, MySQL, .NET Framework' },
+            'ecommerce': { title: 'Ecommerce Website', desc: 'A full-stack ecommerce platform featuring product listings, shopping cart, and order processing.', tech: 'HTML, CSS, JavaScript, MySQL' },
+            'gesture': { title: 'Hand Gesture Cursor Control', desc: 'Innovative interaction system using real-time hand gesture recognition via webcam to control mouse movements.', tech: 'Python, OpenCV, MediaPipe, PyAutoGUI' }
+        };
+
+        function openProject(id) {
+            const panel = document.getElementById('project-panel');
+            panel.style.display = 'block';
+            document.getElementById('p-title').innerText = projectLibrary[id].title;
+            document.getElementById('p-desc').innerText = projectLibrary[id].desc;
+            document.getElementById('p-tech').innerText = projectLibrary[id].tech;
+            panel.style.animation = 'none';
+            panel.offsetHeight; 
+            panel.style.animation = 'slideIn 0.6s ease forwards';
+        }
+
+        function showSection(sectionId) {
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.getAttribute('onclick').includes(sectionId)) btn.classList.add('active');
+            });
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(sec => sec.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            if(document.getElementById('project-panel')) document.getElementById('project-panel').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
